@@ -153,7 +153,10 @@ class WP_JSON_Media extends WP_JSON_Posts {
 			return new WP_Error( 'json_post_invalid_type', __( 'Invalid post type' ), array( 'status' => 400 ) );
 		}
 
-		if ( !empty( $_files ) ) {
+		// If $_files was passed in (file in multi-part form data) or $data isn't an array
+		// then assume media file is being updated. The empty $data check is performed as raw
+		// data may be passed up as well, as opposed to using a form.
+		if ( !empty( $_files ) || empty($data) ) {
 			return $this->insert_attachment( $_files, $_headers, 0, $id);
 		} else {
 			return parent::edit_post( $id, $data, $_headers );
